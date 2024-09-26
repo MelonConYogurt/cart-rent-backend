@@ -1,9 +1,7 @@
 from datetime import datetime, timedelta, timezone
 from typing import Annotated
-
 from fastapi.middleware.cors import CORSMiddleware
-
-
+from fastapi.responses import RedirectResponse
 import jwt
 from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
@@ -137,6 +135,11 @@ async def get_current_active_user(
         raise HTTPException(status_code=400, detail="Inactive user")
     return current_user
 
+
+
+@app.get("/", include_in_schema=False)
+async def redirect_to_docs():
+    return RedirectResponse(url="/docs")
 
 @app.post("/token")
 async def login_for_access_token(
