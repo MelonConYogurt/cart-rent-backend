@@ -2,7 +2,6 @@ import psycopg2
 from .config import load_config
 from .utils.hashed_password import get_password_hash
 
-
 class Connect:
     def __init__(self):
         """ Connect to the PostgreSQL database server """
