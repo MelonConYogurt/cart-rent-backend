@@ -1,6 +1,6 @@
 import psycopg2
-from config import load_config
-from utils.hashed_password import get_password_hash
+from .config import load_config
+from .utils.hashed_password import get_password_hash
 
 
 class Connect:
@@ -68,9 +68,6 @@ class Connect:
         finally:
             return users_in_db        
         
-
-    
-
 
 if __name__ == '__main__':
     db = Connect()

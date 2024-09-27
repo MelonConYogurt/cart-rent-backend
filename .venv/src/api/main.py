@@ -15,7 +15,7 @@ import os
 
 
 #Import the database connection for users in api
-from database.connect import Connect
+from ..database.connect import Connect
 
 
 
