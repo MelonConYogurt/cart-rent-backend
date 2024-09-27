@@ -13,6 +13,14 @@ from pydantic import BaseModel
 from dotenv import load_dotenv
 import os
 
+
+#Import the database connection for users in api
+from database.connect import Connect
+
+
+
+db = Connect()
+
 load_dotenv()
 
 
@@ -21,15 +29,7 @@ ALGORITHM = os.getenv("ALGORITHM")
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", 30))
 
 
-fake_users_db = {
-    "johndoe": {
-        "username": "johndoe",
-        "full_name": "John Doe",
-        "email": "johndoe@example.com",
-        "hashed_password": "$2b$12$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW",
-        "disabled": False,
-    }
-}
+fake_users_db = db.get_all_users_api()
 
 
 origins = [
@@ -157,17 +157,3 @@ async def login_for_access_token(
         data={"sub": user.username}, expires_delta=access_token_expires
     )
     return Token(access_token=access_token, token_type="bearer")
-
-
-@app.get("/users/me/", response_model=User)
-async def read_users_me(
-    current_user: Annotated[User, Depends(get_current_active_user)],
-):
-    return current_user
-
-
-@app.get("/users/me/items/")
-async def read_own_items(
-    current_user: Annotated[User, Depends(get_current_active_user)],
-):
-    return [{"item_id": "Foo", "owner": current_user.username}]
