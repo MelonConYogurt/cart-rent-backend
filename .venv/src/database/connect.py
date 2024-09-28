@@ -117,7 +117,4 @@ class Connect:
 
 if __name__ == '__main__':
     pass
-    # db = Connect()
-    # users = db.get_all_users_api()
-    # print(users)
-    # db.close()
+

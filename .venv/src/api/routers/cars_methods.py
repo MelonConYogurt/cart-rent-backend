@@ -36,4 +36,6 @@ async def add_new_car_info(info: CarModel):
         print(e)
     finally:
         return info
-    
+
+
+

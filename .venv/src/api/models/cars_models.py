@@ -15,4 +15,3 @@ class CarModel(BaseModel):
     transmission_type: str
     drive_type: str
     body_type: str
-

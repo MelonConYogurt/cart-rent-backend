@@ -47,6 +47,7 @@ app = FastAPI()
 
 app.include_router(cars_methods.router)
 
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
