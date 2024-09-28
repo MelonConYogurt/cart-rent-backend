@@ -18,9 +18,9 @@ from .models.security import *
 #Import the database connection for users in api
 from ..database.connect import Connect
 
-
 #Import routers
 from .routers import cars_methods
+
 
 db = Connect()
 load_dotenv()

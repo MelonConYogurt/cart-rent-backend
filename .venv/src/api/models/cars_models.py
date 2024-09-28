@@ -1,17 +1,18 @@
 from pydantic import BaseModel
 
-class car_model(BaseModel):
+class CarModel(BaseModel):
     brand: str
     model: str
     year: int
     vin: int
     color: str
-    mileage:int
-    number_of_doors:int
-    horse_power:int
+    mileage: int
+    number_of_doors: int
+    horse_power: int
     torque: int
-    media_url:str
+    media_url: str
     fuel_type: str
-    transmission_type:str
-    drive_type:str
-    body_type:str
+    transmission_type: str
+    drive_type: str
+    body_type: str
+

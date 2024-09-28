@@ -9,10 +9,11 @@ from ...database.connect import Connect
 router = APIRouter(
     prefix= "/cars",
     tags=["Cars methods"],
+   
 )
 
-@router.post("/add/new/car/info",  response_model=car_model)
-async def add_new_car_info(info: car_model):
+@router.post("/add/new/car/info",  response_model= CarModel)
+async def add_new_car_info(info: CarModel):
     try:
         db = Connect()
         db.insert_new_car_info(
@@ -36,7 +37,3 @@ async def add_new_car_info(info: car_model):
     finally:
         return info
     
-    
-
-
-

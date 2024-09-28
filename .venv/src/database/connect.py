@@ -19,15 +19,11 @@ class Connect:
             self.cursor.close()
         if self.conn:
             self.conn.close()
-
-    def get_all_table_cars_info(self):
-        try:
-            query = "SELECT * FROM public.cars_info"
-            self.cursor.execute(query)
-            rows = self.cursor.fetchall()
-            print("Table cars:\n", rows)
-        except (psycopg2.DatabaseError, Exception) as error:
-            print(error)
+            
+            
+    # -----------------------------------------------------------
+    # users api Functions
+    # -----------------------------------------------------------
 
     def create_user_for_api(self, username: str, full_name: str, email: str, password: str, disabled: bool):
         user_id = None  # Inicializa el user_id
@@ -38,7 +34,7 @@ class Connect:
                          "VALUES (%s, %s, %s, %s, %s) RETURNING id")
                 self.cursor.execute(query, (username, full_name, email, hashed_password, disabled))
                 user_id = self.cursor.fetchone()[0]
-                self.conn.commit()  # Confirma los cambios en la base de datos
+                self.conn.commit()
             else:
                 print("Failed to hash the password.")
         except (psycopg2.DatabaseError, Exception) as error:
@@ -66,7 +62,41 @@ class Connect:
             print(error)   
         finally:
             return users_in_db        
-        
+    
+    # -----------------------------------------------------------
+    # Car Functions
+    # -----------------------------------------------------------
+    
+    def get_all_table_cars_info(self):
+        cars_list = []
+        try:
+            query = "SELECT * FROM public.cars_info"
+            self.cursor.execute(query)
+            rows = self.cursor.fetchall()
+            for row in rows:
+                car = {
+                    "id": row[0],
+                    "brand": row[1],
+                    "model": row[2],
+                    "year": row[3],
+                    "vin": row[4],
+                    "color": row[5],
+                    "mileage": row[6],
+                    "number_of_doors": row[7],
+                    "horse_power": row[8],
+                    "torque": row[9],
+                    "media_url": row[10],
+                    "fuel_type": row[11],
+                    "transmission_type": row[12],
+                    "drive_type": row[13],
+                    "body_type": row[14]
+                }
+                cars_list.append(car)
+        except (psycopg2.DatabaseError, Exception) as error:
+            print(error)
+        finally:
+            return cars_list
+
 
     def insert_new_car_info(self, brand: str, model: str, year: int, vin: int, color: str, mileage: int, number_of_doors: int, horse_power: int, torque: int, media_url: str, fuel_type: str, transmission_type: str, drive_type: str, body_type: str):
         car_id = None  # Initialize car_id
