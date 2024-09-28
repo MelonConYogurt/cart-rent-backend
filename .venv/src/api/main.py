@@ -18,6 +18,10 @@ from .models.security import *
 #Import the database connection for users in api
 from ..database.connect import Connect
 
+
+#Import routers
+from .routers import cars_methods
+
 db = Connect()
 load_dotenv()
 
@@ -40,6 +44,8 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 app = FastAPI()
+
+app.include_router(cars_methods.router)
 
 app.add_middleware(
     CORSMiddleware,

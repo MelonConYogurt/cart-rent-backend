@@ -68,8 +68,26 @@ class Connect:
             return users_in_db        
         
 
+    def insert_new_car_info(self, brand: str, model: str, year: int, vin: int, color: str, mileage: int, number_of_doors: int, horse_power: int, torque: int, media_url: str, fuel_type: str, transmission_type: str, drive_type: str, body_type: str):
+        car_id = None  # Initialize car_id
+        try:
+            query = ("""
+            INSERT INTO public.cars_info(
+            brand, model, year, vin, color, mileage, number_of_doors, horse_power, torque, media_url, fuel_type, transmission_type, drive_type, body_type)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING id;
+                """)
+            self.cursor.execute(query, (brand, model, year, vin, color, mileage, number_of_doors, horse_power, torque, media_url, fuel_type, transmission_type, drive_type, body_type))
+            car_id = self.cursor.fetchone()[0]
+            self.conn.commit()
+        except (psycopg2.DatabaseError, Exception) as error:
+            print(error)
+        finally:
+            print("New car info added:", car_id)
+            return car_id
+
 if __name__ == '__main__':
-    db = Connect()
-    users = db.get_all_users_api()
-    print(users)
-    db.close()
+    pass
+    # db = Connect()
+    # users = db.get_all_users_api()
+    # print(users)
+    # db.close()
