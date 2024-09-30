@@ -4,7 +4,7 @@ class CarModel(BaseModel):
     brand: str
     model: str
     year: int
-    vin: int
+    vin: str
     color: str
     mileage: int
     number_of_doors: int

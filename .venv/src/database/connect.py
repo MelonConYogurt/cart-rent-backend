@@ -98,7 +98,7 @@ class Connect:
             return cars_list
 
 
-    def insert_new_car_info(self, brand: str, model: str, year: int, vin: int, color: str, mileage: int, number_of_doors: int, horse_power: int, torque: int, media_url: str, fuel_type: str, transmission_type: str, drive_type: str, body_type: str):
+    def insert_new_car_info(self, brand: str, model: str, year: int, vin: str, color: str, mileage: int, number_of_doors: int, horse_power: int, torque: int, media_url: str, fuel_type: str, transmission_type: str, drive_type: str, body_type: str):
         car_id = None  # Initialize car_id
         try:
             query = ("""
