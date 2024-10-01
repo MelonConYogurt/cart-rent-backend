@@ -19,7 +19,14 @@ from .models.security import *
 from ..database.connect import Connect
 
 #Import routers
-from .routers import cars_methods
+# from .routers import cars_methods
+
+
+from strawberry.fastapi import GraphQLRouter
+from .routers.cars_methods import schema
+
+# Crear el router de GraphQL
+graphql_app = GraphQLRouter(schema)
 
 
 db = Connect()
@@ -45,8 +52,8 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 app = FastAPI()
 
-app.include_router(cars_methods.router)
-
+# app.include_router(cars_methods.router)
+app.include_router(graphql_app, prefix="/graphql")
 
 app.add_middleware(
     CORSMiddleware,

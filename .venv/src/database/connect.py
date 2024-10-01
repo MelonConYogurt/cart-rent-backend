@@ -75,21 +75,22 @@ class Connect:
             rows = self.cursor.fetchall()
             for row in rows:
                 car = {
-                    "id": row[0],
-                    "brand": row[1],
-                    "model": row[2],
-                    "year": row[3],
-                    "vin": row[4],
-                    "color": row[5],
-                    "mileage": row[6],
-                    "number_of_doors": row[7],
-                    "horse_power": row[8],
-                    "torque": row[9],
-                    "media_url": row[10],
-                    "fuel_type": row[11],
-                    "transmission_type": row[12],
-                    "drive_type": row[13],
-                    "body_type": row[14]
+                    "id": int(row[0]),
+                    "brand": str(row[1]),
+                    "model": str(row[2]),
+                    "year": int(row[3]),
+                    "color": str(row[4]),
+                    "mileage": int(row[5]),
+                    "number_of_doors": str(row[6]),
+                    "horse_power": int(row[7]),
+                    "torque": int(row[8]),
+                    "media_url": str(row[9]),
+                    "fuel_type": str(row[10]),
+                    "transmission_type": str(row[11]),
+                    "drive_type": str(row[12]),
+                    "body_type": str(row[13]),
+                    "vin": str(row[14]),
+                    
                 }
                 cars_list.append(car)
         except (psycopg2.DatabaseError, Exception) as error:
