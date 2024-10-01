@@ -2,6 +2,10 @@ import psycopg2
 from .config import load_config
 from .utils.hashed_password import get_password_hash
 
+
+#import models from strawberry types
+from ..api.models.cars_models import *
+
 class Connect:
     def __init__(self):
         """ Connect to the PostgreSQL database server """
@@ -74,24 +78,23 @@ class Connect:
             self.cursor.execute(query)
             rows = self.cursor.fetchall()
             for row in rows:
-                car = {
-                    "id": int(row[0]),
-                    "brand": str(row[1]),
-                    "model": str(row[2]),
-                    "year": int(row[3]),
-                    "color": str(row[4]),
-                    "mileage": int(row[5]),
-                    "number_of_doors": str(row[6]),
-                    "horse_power": int(row[7]),
-                    "torque": int(row[8]),
-                    "media_url": str(row[9]),
-                    "fuel_type": str(row[10]),
-                    "transmission_type": str(row[11]),
-                    "drive_type": str(row[12]),
-                    "body_type": str(row[13]),
-                    "vin": str(row[14]),
-                    
-                }
+                car = CarModelWithId(
+                    id=int(row[0]),
+                    brand=str(row[1]),
+                    model=str(row[2]),
+                    year=int(row[3]),
+                    color=str(row[4]),
+                    mileage=int(row[5]),
+                    number_of_doors=int(row[6]),
+                    horse_power=int(row[7]),
+                    torque=int(row[8]),
+                    media_url=str(row[9]),
+                    fuel_type=str(row[10]),
+                    transmission_type=str(row[11]),
+                    drive_type=str(row[12]),
+                    body_type=str(row[13]),
+                    vin=str(row[14])
+                )
                 cars_list.append(car)
         except (psycopg2.DatabaseError, Exception) as error:
             print(error)

@@ -18,16 +18,11 @@ from .models.security import *
 #Import the database connection for users in api
 from ..database.connect import Connect
 
-#Import routers
-# from .routers import cars_methods
-
-
 from strawberry.fastapi import GraphQLRouter
 from .routers.cars_methods import schema
 
 # Crear el router de GraphQL
 graphql_app = GraphQLRouter(schema)
-
 
 db = Connect()
 load_dotenv()
@@ -38,18 +33,8 @@ ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", 30))
 
 
 users_in_db_api = db.get_all_users_api()
-
-# origins = [
-#     "http://localhost.tiangolo.com",
-#     "https://localhost.tiangolo.com",
-#     "http://localhost",
-#     "http://localhost:8080",
-# ]
-
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
-
 app = FastAPI()
 
 # app.include_router(cars_methods.router)
