@@ -110,14 +110,12 @@ class Connect:
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
                 """)
             self.cursor.execute(query, (brand, model, year, vin, color, mileage, number_of_doors, horse_power, torque, media_url, fuel_type, transmission_type, drive_type, body_type))
-            car_id = self.cursor.fetchone()[0]
             self.conn.commit()
             return True
         except (psycopg2.DatabaseError, Exception) as error:
             print(error)
             return False
         finally:
-            print("New car info added:", car_id)
             self.close()
 
 if __name__ == '__main__':

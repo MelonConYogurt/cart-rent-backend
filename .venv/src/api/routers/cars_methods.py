@@ -49,7 +49,7 @@ class Mutation:
             if response:
                 return car_model_input
             else:
-                raise Exception(f"Error adding new car info: {e}")
+                raise Exception (f"Error adding new car info")
         except Exception as e:
             raise Exception(f"Error adding new car info: {e}")
         finally:
