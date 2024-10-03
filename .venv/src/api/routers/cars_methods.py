@@ -45,6 +45,7 @@ class Mutation:
                 transmission_type=car_model_input.transmission_type,
                 drive_type=car_model_input.drive_type,
                 body_type=car_model_input.body_type,
+                price= car_model_input.price
             )
             if response:
                 return car_model_input

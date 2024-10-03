@@ -18,7 +18,7 @@ class CarModel:
     body_type: str
     status: bool
     price: int
-    avaible: bool
+    available: bool
     rent_days: int
     last_service: str
     
@@ -38,6 +38,7 @@ class CarModelInput:
     transmission_type: str
     drive_type: str
     body_type: str
+    price: int
     
 @strawberry.type
 class CarModelWithId(CarModel):
