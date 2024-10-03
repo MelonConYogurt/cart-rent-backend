@@ -16,6 +16,11 @@ class CarModel:
     transmission_type: str
     drive_type: str
     body_type: str
+    status: bool
+    price: int
+    avaible: bool
+    rent_days: int
+    last_service: str
     
 @strawberry.input
 class CarModelInput:

@@ -94,7 +94,12 @@ class Connect:
                     transmission_type=str(row[11]),
                     drive_type=str(row[12]),
                     body_type=str(row[13]),
-                    vin=str(row[14])
+                    vin=str(row[14]),
+                    status=row[15],
+                    price=row[16],
+                    avaible=row[17],
+                    rent_days=row[18],
+                    last_service=row[19],
                 )
                 cars_list.append(car)
         except (psycopg2.DatabaseError, Exception) as error:
