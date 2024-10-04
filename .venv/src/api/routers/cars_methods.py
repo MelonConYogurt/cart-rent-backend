@@ -30,31 +30,16 @@ class Mutation:
     def add_new_car_info(self, car_model_input: CarModelInput) -> CarModel:
         try:
             db = Connect()
-            response = db.insert_new_car_info(
-                brand=car_model_input.brand,
-                model=car_model_input.model,
-                year=car_model_input.year,
-                vin=car_model_input.vin,
-                color=car_model_input.color,
-                mileage=car_model_input.mileage,
-                number_of_doors=car_model_input.number_of_doors,
-                horse_power=car_model_input.horse_power,
-                torque=car_model_input.torque,
-                media_url=car_model_input.media_url,
-                fuel_type=car_model_input.fuel_type,
-                transmission_type=car_model_input.transmission_type,
-                drive_type=car_model_input.drive_type,
-                body_type=car_model_input.body_type,
-                price= car_model_input.price
-            )
+            response = db.insert_new_car_info(car_model_input)
             if response:
                 return car_model_input
             else:
-                raise Exception (f"Error adding new car info")
+                raise Exception("Error adding new car info")
         except Exception as e:
             raise Exception(f"Error adding new car info: {e}")
         finally:
             db.close()
+
 
     
 schema = strawberry.Schema(query= Query, mutation= Mutation, subscription=None)

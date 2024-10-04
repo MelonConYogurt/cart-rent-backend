@@ -71,52 +71,12 @@ class Connect:
     # -----------------------------------------------------------
     # Car Functions
     # -----------------------------------------------------------
-    
-    # def get_all_table_cars_info(self)-> List[CarModelWithId]:
-    #     cars_list = []
-    #     try:
-    #         query = "SELECT * FROM public.cars_info"
-    #         self.cursor.execute(query)
-    #         rows = self.cursor.fetchall()
-    #         for row in rows:
-    #             car = CarModelWithId(
-    #                 id=int(row[0]),
-    #                 brand=str(row[1]),
-    #                 model=str(row[2]),
-    #                 year=int(row[3]),
-    #                 color=str(row[4]),
-    #                 mileage=int(row[5]),
-    #                 number_of_doors=int(row[6]),
-    #                 horse_power=int(row[7]),
-    #                 torque=int(row[8]),
-    #                 media_url=str(row[9]),
-    #                 fuel_type=str(row[10]),
-    #                 transmission_type=str(row[11]),
-    #                 drive_type=str(row[12]),
-    #                 body_type=str(row[13]),
-    #                 vin=str(row[14]),
-    #                 status=row[15],
-    #                 price=row[16],
-    #                 avaible=row[17],
-    #                 rent_days=row[18],
-    #                 last_service=row[19],
-    #             )
-    #             cars_list.append(car)
-    #     except (psycopg2.DatabaseError, Exception) as error:
-    #         print(error)
-    #     finally:
-    #         return cars_list
-        
     def get_all_table_cars_info(self) -> List[CarModelWithId]:
         cars_list = []
         try:
             query = "SELECT * FROM public.cars_info"
             self.cursor.execute(query)
             rows = self.cursor.fetchall()
-
-            print(rows)
-
-
             columns_names = [desc[0] for desc in self.cursor.description]
                 
             for row in rows:
@@ -124,30 +84,29 @@ class Connect:
                 
                 car = CarModelWithId(**car_data)
                 cars_list.append(car)
-
         except (psycopg2.DatabaseError, Exception) as error:
             print(error)
         finally:
             return cars_list       
             
-        
-
-    def insert_new_car_info(self, brand: str, model: str, year: int, vin: str, color: str, mileage: int, number_of_doors: int, horse_power: int, torque: int, media_url: str, fuel_type: str, transmission_type: str, drive_type: str, body_type: str, price: int) -> bool:
+    def insert_new_car_info(self, car_info: CarModelInput) -> bool:
         try:
-            query = ("""
-            INSERT INTO public.cars_info(
-            brand, model, year, vin, color, mileage, number_of_doors, horse_power, torque, media_url, fuel_type, transmission_type, drive_type, body_type, price)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
-                """)
-            self.cursor.execute(query, (brand, model, year, vin, color, mileage, number_of_doors, horse_power, torque, media_url, fuel_type, transmission_type, drive_type, body_type, price))
+            car_info_dict = vars(car_info)
+            
+            columns = ', '.join(car_info_dict.keys())
+            values = tuple(car_info_dict.values())
+            
+            print(type(columns))
+            query = f"""
+            INSERT INTO public.cars_info ({columns})
+            VALUES ({', '.join(['%s'] * len(values))});
+            """
+            self.cursor.execute(query, values)
             self.conn.commit()
             return True
         except (psycopg2.DatabaseError, Exception) as error:
-            print(error)
+            print(f"Error: {error}")
             return False
         finally:
             self.close()
-
-if __name__ == '__main__':
-    pass
 
