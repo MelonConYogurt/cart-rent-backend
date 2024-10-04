@@ -71,24 +71,25 @@ class Connect:
     # -----------------------------------------------------------
     # Car Functions
     # -----------------------------------------------------------
-    def get_all_table_cars_info(self, info: CarFilterInput) -> List[CarModelWithId]:
+    def get_all_table_cars_info(self, info: CarFilterInput = None) -> List[CarModelWithId]:
         cars_list = []
         try:
             query = "SELECT * FROM public.cars_info WHERE 1=1"
             query_params = []
 
-            if info.car_id is not None:
-                query += " AND id = %s"
-                query_params.append(info.car_id)
-            
-            if info.price_min is not None and info.price_max is not None:
-                query += " AND price >= %s AND price <= %s"
-                query_params.append(info.price_min)
-                query_params.append(info.price_max)
-            
-            if info.brand is not None:
-                query += " AND brand = %s"
-                query_params.append(info.brand)
+            if info:
+                if info.car_id is not None:
+                    query += " AND id = %s"
+                    query_params.append(info.car_id)
+                
+                if info.price_min is not None and info.price_max is not None:
+                    query += " AND price >= %s AND price <= %s"
+                    query_params.append(info.price_min)
+                    query_params.append(info.price_max)
+                
+                if info.brand is not None:
+                    query += " AND brand = %s"
+                    query_params.append(info.brand)
 
             self.cursor.execute(query, tuple(query_params))
             rows = self.cursor.fetchall()
