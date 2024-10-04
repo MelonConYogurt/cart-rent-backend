@@ -1,3 +1,4 @@
+from typing import Optional
 import strawberry
 
 @strawberry.type
@@ -39,6 +40,13 @@ class CarModelInput:
     drive_type: str
     body_type: str
     price: int
+    
+@strawberry.input
+class CarFilterInput:
+    car_id: Optional[int] = None
+    price_min: Optional[float] = None
+    price_max: Optional[float] = None
+    brand: Optional[str] = None
     
 @strawberry.type
 class CarModelWithId(CarModel):
