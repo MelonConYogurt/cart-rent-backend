@@ -47,6 +47,13 @@ class CarFilterInput:
     price_min: Optional[float] = None
     price_max: Optional[float] = None
     brand: Optional[str] = None
+    color: Optional[str] = None
+    fuel_type: Optional[str] = None
+    transmission_type: Optional[str] = None
+    drive_type: Optional[str] = None
+    mileage_min: Optional[float] = None
+    mileage_max: Optional[float] = None
+    
     
 @strawberry.type
 class CarModelWithId(CarModel):

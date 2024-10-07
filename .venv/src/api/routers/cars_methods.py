@@ -1,5 +1,5 @@
 # from fastapi import APIRouter
-from typing import List
+from typing import List, TypeVar, Dict, Any, Generic
 import strawberry
 
 #impor models for cars
@@ -10,7 +10,7 @@ from ...database.connect import Connect
 
 @strawberry.type
 class Query:
-    @strawberry.field
+    @strawberry.field( description= "Get all cars information")
     def get_all_cars_info(self, filters: Optional[CarFilterInput] = None) -> List[CarModelWithId]:
         try:
             db = Connect()
@@ -26,7 +26,7 @@ class Query:
         return data
 
     
-@strawberry.type
+@strawberry.type(description="Add new car info to the database")
 class Mutation:
     @strawberry.mutation
     def add_new_car_info(self, car_model_input: CarModelInput) -> CarModel:
@@ -41,7 +41,7 @@ class Mutation:
             raise Exception(f"Error adding new car info: {e}")
         finally:
             db.close()
-
+            
     
 schema = strawberry.Schema(query= Query, mutation= Mutation, subscription=None)
 
