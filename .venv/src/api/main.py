@@ -15,12 +15,10 @@ from .routers.cars_methods import schema
 # auth
 from .auth.authentication import *
 
-
 # Crear el router de GraphQL
 graphql_app = GraphQLRouter(schema)
 app = FastAPI()
 
-# app.include_router(cars_methods.router)
 app.include_router(graphql_app, prefix="/graphql", tags=["Graphql Functions"])
 
 app.add_middleware(
@@ -31,11 +29,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get("/", include_in_schema=False)
+@app.get("/", include_in_schema=False, tags=["Other Functions"])
 async def redirect_to_docs():
     return RedirectResponse(url="/docs")
 
-@app.post("/token")
+@app.post("/token", tags=["Authorization Functions"])
 async def login_for_access_token(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
 ) -> Token:
@@ -51,15 +49,3 @@ async def login_for_access_token(
         data={"sub": user.username}, expires_delta=access_token_expires
     )
     return Token(access_token=access_token, token_type="bearer")
-
-# @app.get("/users/me/", response_model=User)
-# async def read_users_me(
-#     current_user: Annotated[User, Depends(get_current_active_user)],
-# ):
-#     return current_user
-
-# @app.get("/users/me/items/")
-# async def read_own_items(
-#     current_user: Annotated[User, Depends(get_current_active_user)],
-# ):
-#     return [{"item_id": "Foo", "owner": current_user.username}]

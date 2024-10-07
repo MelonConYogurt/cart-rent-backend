@@ -52,11 +52,3 @@ class CarFilterInput:
 class CarModelWithId(CarModel):
     id: int
     
-
-@strawberry.type
-class User():
-    username: str
-    email: str | None = None
-    full_name: str | None = None
-    disabled: bool | None = None
-
