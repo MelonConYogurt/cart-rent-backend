@@ -6,6 +6,7 @@ from .utils.hashed_password import get_password_hash
 
 #import models from strawberry types
 from ..api.models.cars_models import *
+from ..api.models.filters_models import *
 
 class Connect:
     def __init__(self):
@@ -71,12 +72,37 @@ class Connect:
     # -----------------------------------------------------------
     # Car Functions
     # -----------------------------------------------------------
+    
     def get_all_table_cars_info(self, info: CarFilterInput = None) -> List[CarModelWithId]:
         cars_list = []
         try:
             query = "SELECT * FROM public.cars_info WHERE 1=1"
             query_params = []
 
+            if info:
+                query, query_params = self.create_filtert_query(info=info)
+
+            self.cursor.execute(query, tuple(query_params))
+            rows = self.cursor.fetchall()
+
+            columns_names = [desc[0] for desc in self.cursor.description]
+            
+            for row in rows:
+                car_data = dict(zip(columns_names, row))
+                car = CarModelWithId(**car_data)
+                cars_list.append(car)
+
+        except (psycopg2.DatabaseError, Exception) as error:
+            print(error)
+        finally:
+            return cars_list
+        
+            
+    def create_filtert_query(self, info: CarFilterInput) -> tuple:
+        try: 
+            query = "SELECT * FROM public.cars_info WHERE 1=1"
+            query_params = []
+            
             if info:
                 if info.car_id is not None:
                     query += " AND id = %s"
@@ -111,25 +137,14 @@ class Connect:
                     query += " AND mileage >= %s AND mileage <= %s"
                     query_params.append(info.mileage_min)
                     query_params.append(info.mileage_max)
-                   
-                 
 
-            self.cursor.execute(query, tuple(query_params))
-            rows = self.cursor.fetchall()
+                return query, query_params
+            else:
+                return query, query_params
+        except Exception as e:
+            print(e)
+     
 
-            columns_names = [desc[0] for desc in self.cursor.description]
-            
-            for row in rows:
-                car_data = dict(zip(columns_names, row))
-                car = CarModelWithId(**car_data)
-                cars_list.append(car)
-
-        except (psycopg2.DatabaseError, Exception) as error:
-            print(error)
-        finally:
-            return cars_list
-
-            
     def insert_new_car_info(self, car_info: CarModelInput) -> bool:
         try:
             car_info_dict = vars(car_info)
@@ -151,3 +166,38 @@ class Connect:
         finally:
             self.close()
 
+    def get_all_brands(self)-> List[Brand]:
+        try:   
+          query = """
+            SELECT brand
+            FROM public.cars_info 
+            GROUP BY brand
+          """
+          self.cursor.execute(query)
+          rows = self.cursor.fetchall()
+          all_rows = [Brand(name=row[0]) for row in rows]
+          return all_rows
+        except (psycopg2.DatabaseError, Exception) as error:
+            print(f"Error: {error}")
+            return False
+        finally:
+            self.close()
+            
+    
+    def get_all_colors(self)-> List[Color]:
+        try:   
+          query = """
+            SELECT color
+            FROM public.cars_info 
+            GROUP BY color
+          """
+          self.cursor.execute(query)
+          rows = self.cursor.fetchall()
+          all_rows = [Color(name=row[0]) for row in rows]
+          return all_rows
+        except (psycopg2.DatabaseError, Exception) as error:
+            print(f"Error: {error}")
+            return False
+        finally:
+            self.close()
+        

@@ -15,11 +15,16 @@ from .routers.cars_methods import schema
 # auth
 from .auth.authentication import *
 
+
+#
+from .routers.filters_methods import *
+
 # Crear el router de GraphQL
 graphql_app = GraphQLRouter(schema)
 app = FastAPI()
 
 app.include_router(graphql_app, prefix="/graphql", tags=["Graphql Functions"])
+app.include_router(filter_methods)
 
 app.add_middleware(
     CORSMiddleware,
