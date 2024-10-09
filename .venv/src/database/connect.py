@@ -122,15 +122,15 @@ class Connect:
                    query_params.append(info.color)
                    
                 if info.fuel_type is not None:
-                    query += " AND id = %s"
+                    query += " AND fuel_type = %s"
                     query_params.append(info.fuel_type)
         
                 if info.transmission_type is not None:
-                    query += " AND brand = %s"
+                    query += " AND transmission_type = %s"
                     query_params.append(info.transmission_type)
                     
                 if info.drive_type is not None:
-                   query += " AND color = %s"
+                   query += " AND drive_type = %s"
                    query_params.append(info.drive_type)
                    
                 if info.mileage_min is not None and info.mileage_max is not None:
