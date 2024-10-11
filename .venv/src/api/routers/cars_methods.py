@@ -1,5 +1,5 @@
 # from fastapi import APIRouter
-from typing import List, TypeVar, Dict, Any, Generic
+from typing import List, TypeVar, Dict, Any, Generic, Optional
 import strawberry
 
 #impor models for cars
@@ -10,20 +10,28 @@ from ...database.connect import Connect
 
 @strawberry.type
 class Query:
-    @strawberry.field( description= "Get all cars information")
-    def get_all_cars_info(self, filters: Optional[CarFilterInput] = None) -> List[CarModelWithId]:
+    @strawberry.field(description="Get all cars information")
+    def get_all_cars_info(self, filters: Optional[CarFilterInput] = None, start: Optional[int] = None, finish: Optional[int] = None) -> List[CarModelWithId]:
         try:
             db = Connect()
+            
+            # Si hay filtros, aplicarlos
             if filters:
                 data = db.get_all_table_cars_info(filters)
             else:
                 data = db.get_all_table_cars_info()
+            
+            # Aplicar paginación si se proporciona start y finish
+            if start is not None and finish is not None:
+                data = data[start:finish]
+        
         except Exception as e:
             print(e)
             return []
         finally:
             db.close()
         return data
+
 
     
 @strawberry.type(description="Add new car info to the database")
