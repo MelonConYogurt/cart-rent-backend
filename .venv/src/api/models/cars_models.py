@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List
 import strawberry
 
 @strawberry.type
@@ -58,4 +58,3 @@ class CarFilterInput:
 @strawberry.type
 class CarModelWithId(CarModel):
     id: int
-    

@@ -1,5 +1,5 @@
 # from fastapi import APIRouter
-from typing import List, TypeVar, Dict, Any, Generic, Optional
+from typing import List, Optional
 import strawberry
 
 #impor models for cars
@@ -14,17 +14,13 @@ class Query:
     def get_all_cars_info(self, filters: Optional[CarFilterInput] = None, start: Optional[int] = None, finish: Optional[int] = None) -> List[CarModelWithId]:
         try:
             db = Connect()
-            
-            # Si hay filtros, aplicarlos
             if filters:
                 data = db.get_all_table_cars_info(filters)
             else:
                 data = db.get_all_table_cars_info()
             
-            # Aplicar paginación si se proporciona start y finish
             if start is not None and finish is not None:
                 data = data[start:finish]
-        
         except Exception as e:
             print(e)
             return []
