@@ -58,3 +58,8 @@ class CarFilterInput:
 @strawberry.type
 class CarModelWithId(CarModel):
     id: int
+
+@strawberry.type
+class CarResponse:
+    cars: List[CarModelWithId]
+    total_rows : int

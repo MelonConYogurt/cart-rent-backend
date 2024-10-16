@@ -82,7 +82,7 @@ class Connect:
             print(error)
         return total_rows
 
-    def get_all_table_cars_info(self, info: CarFilterInput = None, limit: int = 3, offset: int = 0) -> List[CarModelWithId]:
+    def get_all_table_cars_info(self, info: CarFilterInput = None, limit: int = 2, offset: int = 0) -> List[CarModelWithId]:
         cars_list = []
         query = "SELECT * FROM public.cars_info WHERE 1=1 "
         query_params = []
@@ -93,6 +93,10 @@ class Connect:
                 
             query += " LIMIT %s OFFSET %s"
             query_params.extend([limit, offset])
+
+            # Print the query and parameters
+            print(f"Query: {query}")
+            print(f"Query Parameters: {query_params}")
 
             self.cursor.execute(query, tuple(query_params))
             rows = self.cursor.fetchall()
@@ -109,7 +113,7 @@ class Connect:
         except (psycopg2.DatabaseError, Exception) as error:
             print(error)
         finally:
-            return cars_list
+            return cars_list, total_of_rows
         
     def create_filtert_query(self, info: CarFilterInput) -> tuple:
         try: 

@@ -10,23 +10,24 @@ from ...database.connect import Connect
 
 @strawberry.type
 class Query:
-    @strawberry.field(description="Get all cars information")
-    def get_all_cars_info(self, filters: Optional[CarFilterInput] = None, limit: Optional[int] = None, offset: Optional[int] = None) -> List[CarModelWithId]:
+    @strawberry.field(description="Get all cars information", name="data")
+    def get_all_cars_info(self, filters: Optional[CarFilterInput] = None, limit: Optional[int] = None, offset: Optional[int] = None) -> CarResponse:
         try:
             db = Connect()
             if filters:
-                data = db.get_all_table_cars_info(filters, limit, offset)
+                data, total_rows = db.get_all_table_cars_info(filters, limit, offset)
             else:
-                data = db.get_all_table_cars_info()
+                data, total_rows = db.get_all_table_cars_info()
         except Exception as e:
             print(e)
             return []
         finally:
             db.close()
-        return data
+        return CarResponse(
+            cars=data,
+            total_rows= total_rows
+        )
 
-
-    
 @strawberry.type(description="Add new car info to the database")
 class Mutation:
     @strawberry.mutation
