@@ -73,14 +73,26 @@ class Connect:
     # Car Functions
     # -----------------------------------------------------------
     
-    def get_all_table_cars_info(self, info: CarFilterInput = None) -> List[CarModelWithId]:
-        cars_list = []
+    def get_number_of_rows(self) -> int:
+        total_rows = 0
         try:
-            query = "SELECT * FROM public.cars_info WHERE 1=1"
-            query_params = []
+            self.cursor.execute("SELECT COUNT(*) FROM public.cars_info")
+            total_rows = self.cursor.fetchone()[0]
+        except (psycopg2.DatabaseError, Exception) as error:
+            print(error)
+        return total_rows
 
+    def get_all_table_cars_info(self, info: CarFilterInput = None, limit: int = 3, offset: int = 0) -> List[CarModelWithId]:
+        cars_list = []
+        query = "SELECT * FROM public.cars_info WHERE 1=1 "
+        query_params = []
+        total_of_rows = 0
+        try:
             if info:
                 query, query_params = self.create_filtert_query(info=info)
+                
+            query += " LIMIT %s OFFSET %s"
+            query_params.extend([limit, offset])
 
             self.cursor.execute(query, tuple(query_params))
             rows = self.cursor.fetchall()
@@ -92,12 +104,13 @@ class Connect:
                 car = CarModelWithId(**car_data)
                 cars_list.append(car)
 
+            total_of_rows = self.get_number_of_rows()
+            print(total_of_rows)
         except (psycopg2.DatabaseError, Exception) as error:
             print(error)
         finally:
             return cars_list
         
-            
     def create_filtert_query(self, info: CarFilterInput) -> tuple:
         try: 
             query = "SELECT * FROM public.cars_info WHERE 1=1"
@@ -144,7 +157,6 @@ class Connect:
         except Exception as e:
             print(e)
      
-
     def insert_new_car_info(self, car_info: CarModelInput) -> bool:
         try:
             car_info_dict = vars(car_info)

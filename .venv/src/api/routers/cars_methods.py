@@ -11,16 +11,13 @@ from ...database.connect import Connect
 @strawberry.type
 class Query:
     @strawberry.field(description="Get all cars information")
-    def get_all_cars_info(self, filters: Optional[CarFilterInput] = None, start: Optional[int] = None, finish: Optional[int] = None) -> List[CarModelWithId]:
+    def get_all_cars_info(self, filters: Optional[CarFilterInput] = None, limit: Optional[int] = None, offset: Optional[int] = None) -> List[CarModelWithId]:
         try:
             db = Connect()
             if filters:
-                data = db.get_all_table_cars_info(filters)
+                data = db.get_all_table_cars_info(filters, limit, offset)
             else:
                 data = db.get_all_table_cars_info()
-            
-            if start is not None and finish is not None:
-                data = data[start:finish]
         except Exception as e:
             print(e)
             return []
