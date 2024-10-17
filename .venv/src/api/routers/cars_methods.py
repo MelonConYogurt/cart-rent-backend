@@ -11,16 +11,20 @@ from ...database.connect import Connect
 @strawberry.type
 class Query:
     @strawberry.field(description="Get all cars information", name="data")
-    def get_all_cars_info(self, filters: Optional[CarFilterInput] = None, limit: Optional[int] = None, offset: Optional[int] = None) -> CarResponse:
+    def get_all_cars_info(self, filters: Optional[CarFilterInput] = None, limit: int = 2, offset: int = 0) -> CarResponse:
         try:
+            print("En la api:", limit, offset)
             db = Connect()
             if filters:
                 data, total_rows = db.get_all_table_cars_info(filters, limit, offset)
             else:
-                data, total_rows = db.get_all_table_cars_info()
+                data, total_rows = db.get_all_table_cars_info(limit=limit, offset=offset)
         except Exception as e:
             print(e)
-            return []
+            return CarResponse(
+            cars= [],
+            total_rows= 0
+        )
         finally:
             db.close()
         return CarResponse(

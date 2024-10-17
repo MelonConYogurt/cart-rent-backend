@@ -82,11 +82,12 @@ class Connect:
             print(error)
         return total_rows
 
-    def get_all_table_cars_info(self, info: CarFilterInput = None, limit: int = 2, offset: int = 0) -> List[CarModelWithId]:
+    def get_all_table_cars_info(self, limit: int , offset: int, info: CarFilterInput = None) -> List[CarModelWithId]:
         cars_list = []
         query = "SELECT * FROM public.cars_info WHERE 1=1 "
         query_params = []
         total_of_rows = 0
+        print("En la base de datos: ",limit, offset)
         try:
             if info:
                 query, query_params = self.create_filtert_query(info=info)
@@ -94,7 +95,6 @@ class Connect:
             query += " LIMIT %s OFFSET %s"
             query_params.extend([limit, offset])
 
-            # Print the query and parameters
             print(f"Query: {query}")
             print(f"Query Parameters: {query_params}")
 
