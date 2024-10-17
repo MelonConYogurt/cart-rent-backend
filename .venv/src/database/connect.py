@@ -1,4 +1,5 @@
 from typing import List
+from fastapi import HTTPException, status
 import psycopg2
 from .config import load_config
 from .utils.hashed_password import get_password_hash
@@ -217,9 +218,8 @@ class Connect:
         finally:
             self.close()
     
-    from typing import Union
 
-    def delete_car_by_id(self, id: int) -> Union[ResponseDeleteMethod, bool]:
+    def delete_car_by_id(self, id: int) -> ResponseDeleteMethod:
         try:
             if self.conn.closed:
                 self.connect()
@@ -231,19 +231,17 @@ class Connect:
                     if verification:
                         cursor.execute("DELETE FROM public.cars_info WHERE id = %s", (id,))
                         self.conn.commit()  
-                        return validate_exist
+                        return validate_exist  
                     else:
-                        print("No se encontró el registro con ese ID.")
-                        self.conn.rollback()  
-                        return False
+                        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No se encontró el registro con ese ID.")
             else:
-                return False
+                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No se encontró el registro con ese ID.")
         except (psycopg2.DatabaseError, Exception) as error:
             print(f"Error: {error}")
             self.conn.rollback()  
-            return False
+            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(error))
 
-    def change_car_state(self, available: bool, id: int) -> Union[ResponseDeleteMethod, bool]:
+    def change_car_state(self, available: bool, id: int) -> ResponseDeleteMethod:
         try:
             if self.conn.closed:
                 self.connect()
@@ -252,13 +250,13 @@ class Connect:
                 with self.conn.cursor() as cursor:
                     cursor.execute("UPDATE public.cars_info SET available = %s WHERE id = %s", (available, id))
                     self.conn.commit()  
-                    return validate_exist
+                    return validate_exist  
             else:
-                 return False
+                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No se encontró el registro con ese ID.")
         except (psycopg2.DatabaseError, Exception) as error:
             print(f"Error: {error}")
             self.conn.rollback()  
-            return False
+            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(error))
 
     def search_car_by_id(self, id: int) -> ResponseDeleteMethod:
         try:
