@@ -221,15 +221,13 @@ class Connect:
 
     def delete_car_by_id(self, id: int) -> Union[ResponseDeleteMethod, bool]:
         try:
+            if self.conn.closed:
+                self.connect()
             validate_exist = self.search_car_by_id(id=id)
             if validate_exist:
-                print(validate_exist)
-                self.conn.autocommit = False  
                 with self.conn.cursor() as cursor:
                     cursor.execute("SELECT 1 FROM public.cars_info WHERE id = %s", (id,))
                     verification = cursor.fetchone()
-                    print(verification)
-                    
                     if verification:
                         cursor.execute("DELETE FROM public.cars_info WHERE id = %s", (id,))
                         self.conn.commit()  
@@ -238,29 +236,29 @@ class Connect:
                         print("No se encontró el registro con ese ID.")
                         self.conn.rollback()  
                         return False
-            else: return False
+            else:
+                return False
         except (psycopg2.DatabaseError, Exception) as error:
             print(f"Error: {error}")
             self.conn.rollback()  
             return False
-        finally:
-            self.conn.autocommit = True 
-            self.close()
 
-    def change_car_state(self, available: bool, id: int) -> bool:
+    def change_car_state(self, available: bool, id: int) -> Union[ResponseDeleteMethod, bool]:
         try:
-            self.conn.autocommit = False  
-            with self.conn.cursor() as cursor:
-                cursor.execute("UPDATE public.cars_info SET available = %s WHERE id = %s", (available, id))
-                self.conn.commit()  
-                return True
+            if self.conn.closed:
+                self.connect()
+            validate_exist = self.search_car_by_id(id=id)
+            if validate_exist:
+                with self.conn.cursor() as cursor:
+                    cursor.execute("UPDATE public.cars_info SET available = %s WHERE id = %s", (available, id))
+                    self.conn.commit()  
+                    return validate_exist
+            else:
+                 return False
         except (psycopg2.DatabaseError, Exception) as error:
             print(f"Error: {error}")
             self.conn.rollback()  
             return False
-        finally:
-            self.conn.autocommit = True  
-            self.close()
 
     def search_car_by_id(self, id: int) -> ResponseDeleteMethod:
         try:
@@ -268,12 +266,8 @@ class Connect:
             raw_car_info = self.cursor.fetchone()
             columns = [row[0] for row in self.cursor.description]
             data = dict(zip(columns, raw_car_info))
-            print(data)
             car_info = ResponseDeleteMethod(**data)
-            print(car_info)
             return car_info  
         except (psycopg2.DatabaseError, Exception) as error:
             print(f"Error: {error}")
             return False
-        finally:
-            self.close()  
