@@ -16,8 +16,10 @@ class Query:
             print("En la api:", limit, offset)
             db = Connect()
             if filters:
-                data, total_rows = db.get_all_table_cars_info(filters, limit, offset)
+                print("Se mando CON filtros")
+                data, total_rows = db.get_all_table_cars_info(info=filters, limit=limit, offset=offset)
             else:
+                print("Se mando SIN filtros")
                 data, total_rows = db.get_all_table_cars_info(limit=limit, offset=offset)
         except Exception as e:
             print(e)
@@ -38,7 +40,7 @@ class Mutation:
     def add_new_car_info(self, car_model_input: CarModelInput) -> CarModel:
         try:
             db = Connect()
-            response = db.insert_new_car_info(car_model_input)
+            response = db.insert_new_car_info(car_info=car_model_input)
             if response:
                 return car_model_input
             else:
