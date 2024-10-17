@@ -2,7 +2,7 @@ from typing import Annotated
 from fastapi.responses import RedirectResponse
 from datetime import timedelta
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi import Depends, FastAPI, HTTPException, status, Path
+from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.security import  OAuth2PasswordRequestForm
 
 #load models for api security
@@ -10,11 +10,11 @@ from .models.security import *
 
 # Strawberry router
 from strawberry.fastapi import GraphQLRouter
-from .routers.cars_methods import schema
+from .routers.cars_methods_graphql import schema
+from .routers.cars_methods_fastapi import manage_functions
 
 # auth
 from .auth.authentication import *
-
 
 #
 from .routers.filters_methods import *
@@ -25,6 +25,7 @@ app = FastAPI()
 
 app.include_router(graphql_app, prefix="/graphql", tags=["Graphql Functions"])
 app.include_router(filter_methods)
+app.include_router(manage_functions)
 
 app.add_middleware(
     CORSMiddleware,

@@ -1,4 +1,6 @@
 from typing import Optional, List
+from pydantic import BaseModel
+from datetime import date
 import strawberry
 
 @strawberry.type
@@ -54,7 +56,6 @@ class CarFilterInput:
     mileage_min: Optional[float] = None
     mileage_max: Optional[float] = None
     
-    
 @strawberry.type
 class CarModelWithId(CarModel):
     id: int
@@ -63,3 +64,29 @@ class CarModelWithId(CarModel):
 class CarResponse:
     cars: List[CarModelWithId]
     total_rows : int
+    
+class DeleteMethod(BaseModel):
+    id: int
+
+class ResponseDeleteMethod(BaseModel):
+    id: int
+    brand: str
+    model: str
+    year: int
+    vin: str
+    color: str
+    mileage: int
+    number_of_doors: int
+    horse_power: int
+    torque: int
+    media_url: str
+    fuel_type: str
+    transmission_type: str
+    drive_type: str
+    body_type: str
+    status: bool
+    price: int
+    available: bool
+    rent_days: int
+    last_service: date
+    
