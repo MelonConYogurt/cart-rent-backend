@@ -20,7 +20,7 @@ def delete_car_by_id(id: DeleteMethod ):
 
 
 @manage_functions.post("/change/available/", response_model=ResponseDeleteMethod, dependencies=[Depends(get_current_active_user)])
-def change_car_available_by_id(data: ChangeState ):
+def change_car_available_by_id(data: ChangeAvailable ):
     db = Connect()
     try:
         car_info = db.change_car_available( id= data.id, available=data.available )
@@ -33,7 +33,7 @@ def change_car_available_by_id(data: ChangeState ):
 def change_car_state_by_id(data: ChangeState ):
     db = Connect()
     try:
-        car_info = db.change_car_available( id= data.id, available=data.available )
+        car_info = db.change_car_state( id= data.id, state=data.state )
         return car_info    
     except  Exception as e:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))

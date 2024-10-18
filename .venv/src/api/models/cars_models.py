@@ -90,6 +90,10 @@ class ResponseDeleteMethod(BaseModel):
     rent_days: int
     last_service: date
 
-class ChangeState(BaseModel):
+class ChangeAvailable(BaseModel):
     available: bool
+    id: int
+
+class ChangeState(BaseModel):
+    state: bool
     id: int
