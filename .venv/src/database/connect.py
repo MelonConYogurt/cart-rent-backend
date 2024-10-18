@@ -241,7 +241,7 @@ class Connect:
             self.conn.rollback()  
             raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(error))
 
-    def change_car_state(self, available: bool, id: int) -> ResponseDeleteMethod:
+    def change_car_available(self, available: bool, id: int) -> ResponseDeleteMethod:
         try:
             if self.conn.closed:
                 self.connect()
@@ -249,6 +249,23 @@ class Connect:
             if validate_exist:
                 with self.conn.cursor() as cursor:
                     cursor.execute("UPDATE public.cars_info SET available = %s WHERE id = %s", (available, id))
+                    self.conn.commit()  
+                    return validate_exist  
+            else:
+                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No se encontró el registro con ese ID.")
+        except (psycopg2.DatabaseError, Exception) as error:
+            print(f"Error: {error}")
+            self.conn.rollback()  
+            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(error))
+        
+    def change_car_state(self, state: bool, id: int) -> ResponseDeleteMethod:
+        try:
+            if self.conn.closed:
+                self.connect()
+            validate_exist = self.search_car_by_id(id=id)
+            if validate_exist:
+                with self.conn.cursor() as cursor:
+                    cursor.execute("UPDATE public.cars_info SET status = %s WHERE id = %s", (state, id))
                     self.conn.commit()  
                     return validate_exist  
             else:
